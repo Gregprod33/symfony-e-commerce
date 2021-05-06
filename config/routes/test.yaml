@@ -1,0 +1,19 @@
+# test:
+  # path: /test/{age<\d+>?0} 
+#   On peut ajouter les requirements et les defaults directement dans le parametre de la route
+#   ici {age} est un parametre que l'on pourra mettre dans l'url, (localhost/test/39 par ex) et ce param sera récupéré dans l'attribut attributes de Request. Il faudra donc le specifier dans le controller et remplacer query par attributes
+  # controller: App\Controller\TestController::test
+  # methods: [GET, POST]
+      # on peut ajouter des contraintes de methodes pour nos routes
+  # host: localhost
+      # permet de contraidre cette route à un URL précis
+      # On peut ajouter {subdomain}devant l'url pour dire qu'il peut prendre plusieurs sous domaines: ex {subdomain}.monsite.com
+  # schemes: [https]
+      # Les schemes permettent de contraindre le type de requete securisée ou non a rentrer pour la route
+#   defaults:
+#    age: 0
+#   requirements:
+#    age: \d+
+      # Avec requirement on définit le type de valeur que l'on attend dans age, ici
+      # on specifie que l'on attend un ou des nomvres decimaus avec une regex;
+      # attention l'indentation ne doit pas etre modifiee !!!
