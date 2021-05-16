@@ -1,0 +1,60 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	Accueil
+{% endblock %}
+
+
+{% block body %}
+
+	<h1>Nos produits</h1>
+	<div class="row">
+		{% for p in products %}
+			<div class="col mx-auto">
+				<div class="card border-info m-3">
+					<div class="card-header text-white bg-info">{{p.category.name}}</div>
+					<img src="{{p.picture}}" alt="Image du produit" class="card-img-top">
+					<div class="card-body">
+						<h4 class="card-title">{{p.name}}</h4>
+						<p class="card-text">{{p.shortDescription}} ({{p.price}} &euro;)</p>
+					</div>
+					<div class="mx-auto p-2">
+						<a class="btn btn-primary btn-sm mx-1" href="#">Détails</a>
+						<a class="btn btn-success btn-sm mx-1" href="#">Ajouter au panier</a>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+	<hr class="my-5">
+	<h2 class="mb-4">Un service irréprochable, des clients satisfaits !</h2>
+
+	<div class="row mx-auto">
+		{% include "shared/_assurance.html.twig" with {
+            'background': 'warning',
+           'color': 'warning',
+           'categorie': 'Livraison',
+           'titre': 'Partout en France',
+           'icone': 'fas fa-truck fa 3x',
+           'texte': 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quaerat, distinctio.'
+       } %}
+
+		{% include "shared/_assurance.html.twig" with {
+            'background': 'success',
+           'color': 'success',
+           'categorie': 'Sastisfaction',
+           'titre': '96% des clients ravis',
+           'icone': 'fas fa-check fa 3x',
+           'texte': 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Id, nam!'
+       } %}
+
+		{% include "shared/_assurance.html.twig" with {
+            'background': 'warning',
+           'color': 'warning',
+           'categorie': 'Paiement sécurisé',
+           'titre': 'Assurances',
+           'icone': 'fas fa-lock fa 3x',
+           'texte': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem, perferendis.'
+       } %}
+	</div>
+{% endblock %}

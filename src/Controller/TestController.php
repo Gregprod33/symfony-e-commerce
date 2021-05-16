@@ -10,19 +10,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class TestController
 {
 
-    protected $calculator;
-    
-    public function __construct(Calculator $calculator)
-    {
-        $this->calculator = $calculator;
-    }
+    // protected $calculator;
+
+    // public function __construct(Calculator $calculator)
+    // {
+    //     $this->calculator = $calculator;
+    // }
     /**
-     * @Route("/", name="index")      
+     * @Route("/index", name="index")      
      */
-    public function index()
+    public function index(Calculator $calculator)
     {
-       $tva = $this->calculator->calcul(80);
-       dump($tva);
+        $tva = $calculator->calcul(80);
+        dump($tva);
         dd("ça fonctionne");
     }
 
@@ -34,7 +34,7 @@ class TestController
         // $request = Request::createFromGlobals(); //provient du package http foundation et permet d'analyser la requete http
 
         // crée un objet de la classe Request avec la méthode statique createFromGlobals qui gère l'ensemble des superglobales.
-        
+
         // $age = $request->query->get('age', 0); 
         //grace à la propriété query on récupère la superglobale GET passé à l'url, si elle n'existe pas, on affecte la valeur 0
         // les propriétes comme query ou encore request présents dans request sont des bags ou tableaux associatifs
@@ -49,4 +49,3 @@ class TestController
 
     }
 }
-
