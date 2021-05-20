@@ -19,7 +19,7 @@
 						<p class="card-text">{{p.shortDescription}} ({{p.price}} &euro;)</p>
 					</div>
 					<div class="mx-auto p-2">
-						<a class="btn btn-primary btn-sm mx-1" href="#">Détails</a>
+						<a class="btn btn-primary btn-sm mx-1" href="{{ path('product_show', {'category_slug': p.category.slug, 'slug': p.slug}) }}">Détails</a>
 						<a class="btn btn-success btn-sm mx-1" href="#">Ajouter au panier</a>
 					</div>
 				</div>
