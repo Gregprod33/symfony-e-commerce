@@ -16,6 +16,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProductController extends AbstractController
 {
@@ -64,44 +65,52 @@ class ProductController extends AbstractController
     /**
      * @Route("/admin/product/create", name="product_create")
      */
-    public function create(FormFactoryInterface $factory)
+    public function create(FormFactoryInterface $factory, CategoryRepository $categoryRepository, Request $request)
     {
-
-
         $builder = $factory->createBuilder();
+
         $builder->add('name', TextType::class, [
-            'label' => 'Nom du Produit',
-            'attr' => ['class' => 'form-control', 'placeholder' => 'Tapez le nom du produit']
+            'label' => 'Nom du produit',
+            'attr' => [
+                'placeholder' => 'Nom du produit'
+            ]
         ])
             ->add('shortDescription', TextareaType::class, [
                 'label' => 'Description courte',
                 'attr' => [
-                    'placeholder' => 'Tapez une courte description',
-                    'class' => 'form-control'
+                    'placeholder' => 'Description du produit'
                 ]
+
             ])
             ->add('price', MoneyType::class, [
-                'label' => 'Prix du produit',
+                'label' => 'Prix',
                 'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Tapez le prix du produit en euros'
+                    'placeholder' => 'Prix du produit'
                 ]
             ])
+
+
+
             ->add('category', EntityType::class, [
-                'label' => 'Catégorie du produit',
+                'label' => 'Entrez une catégorie',
                 'attr' => ['class' => 'form-control'],
-                'placeholder' => '--Choisir une catégorie--', // ici placeholder est une option de ChoiceType
+                'placeholder' => 'Entrez une catégorie',
                 'class' => Category::class,
-                'choice_label' => 'name'
+                'choice_label' => function (Category $category) {
+                    return mb_strtoupper($category->getName());
+                }
 
             ]);
 
         $form = $builder->getForm();
 
+        $form->handleRequest($request);
+        $data = $form->getData();
+            dump($data);
         $formView = $form->createView();
 
         return $this->render('product/create.html.twig', [
-            'formView' => $formView,
+            'formView' => $formView
         ]);
     }
 }
