@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 
-
 {% block title %}
-	Création d'un produit
+	Edition du produit:
+	{{ product.name }}
+
 {% endblock %}
 
 
 {% block body %}
-	<h1>Nouveau produit</h1>
+	<h1>Editer Produit</h1>
 	{{ form_start(formView) }}
 	{{ form_errors(formView) }}
 	{# {{ form_widget(formView) }} #}
@@ -26,7 +27,7 @@
 	</div>
 	<button class="submit btn btn-info mt-2">
 		<i class="fas fa-save"></i>
-		Créer le produit</button>
+		Valider</button>
 	{{ form_end(formView) }}
 
 

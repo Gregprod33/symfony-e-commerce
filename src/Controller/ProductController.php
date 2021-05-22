@@ -3,20 +3,26 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\Product;
+use App\Form\ProductType;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProductController extends AbstractController
 {
@@ -63,54 +69,67 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route("/admin/product/create", name="product_create")
+     * @Route("/admin/product/{id}/edit", name="product_edit")
      */
-    public function create(FormFactoryInterface $factory, CategoryRepository $categoryRepository, Request $request)
+    public function edit($id, ProductRepository $productRepository, Request $request, SluggerInterface $slugger, EntityManagerInterface $em)
     {
-        $builder = $factory->createBuilder();
-
-        $builder->add('name', TextType::class, [
-            'label' => 'Nom du produit',
-            'attr' => [
-                'placeholder' => 'Nom du produit'
-            ]
-        ])
-            ->add('shortDescription', TextareaType::class, [
-                'label' => 'Description courte',
-                'attr' => [
-                    'placeholder' => 'Description du produit'
-                ]
-
-            ])
-            ->add('price', MoneyType::class, [
-                'label' => 'Prix',
-                'attr' => [
-                    'placeholder' => 'Prix du produit'
-                ]
-            ])
-
-
-
-            ->add('category', EntityType::class, [
-                'label' => 'Entrez une catégorie',
-                'attr' => ['class' => 'form-control'],
-                'placeholder' => 'Entrez une catégorie',
-                'class' => Category::class,
-                'choice_label' => function (Category $category) {
-                    return mb_strtoupper($category->getName());
-                }
-
-            ]);
-
-        $form = $builder->getForm();
-
-        $form->handleRequest($request);
-        $data = $form->getData();
-            dump($data);
+        $product = $productRepository->find($id);
+        $form = $this->createForm(ProductType::class, $product);
         $formView = $form->createView();
 
+        $form->handleRequest($request);
+
+        if($form->isSubmitted())
+        {
+            $product->setSlug(strtolower($slugger->slug($product->getName())));
+
+            $em->flush();
+
+            return $this->redirectToRoute('product_show', [
+                'category_slug' => $product->getCategory()->getSlug(),
+                'slug' => $product->getSlug()
+            ]);
+
+        }
+
+        return $this->render('product/edit.html.twig', [
+            'formView' => $formView,
+            'product' => $product
+        ]);
+                
+    }
+
+
+    /**
+     * @Route("/admin/product/create", name="product_create")
+     */
+    public function create(Request $request, SluggerInterface $slugger, EntityManagerInterface $em)
+    {
+        $product = new Product;
+        $form = $this->createForm(ProductType::class, $product);
+        $formView = $form->createView();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted())
+        {
+            $product->setSlug(strtolower($slugger->slug($product->getName())));
+
+            $em->persist($product);
+            $em->flush();
+
+            return $this->redirectToRoute('product_show', [
+                'category_slug' => $product->getCategory()->getSlug(),
+                'slug' => $product->getSlug()
+            ]);
+        }
+
+        
+
+      
         return $this->render('product/create.html.twig', [
-            'formView' => $formView
+            'formView' => $formView,
+            'product' => $product
         ]);
     }
 }
