@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductType extends AbstractType
 {
@@ -22,26 +23,30 @@ class ProductType extends AbstractType
             'label' => 'Nom du produit',
             'attr' => [
                 'placeholder' => 'Nom du produit'
-            ]
+            ],
+            'required' => false  
         ])
         ->add('shortDescription', TextareaType::class, [
             'label' => 'Description courte',
             'attr' => [
                 'placeholder' => 'Description du produit'
-            ]
+            ],
+            'required' => false
 
         ])
         ->add('price', MoneyType::class, [
             'label' => 'Prix',
             'attr' => [
                 'placeholder' => 'Prix du produit'
-            ]
+            ],
+            'required' => false
         ])
         ->add('picture', UrlType::class, [
             'label' => 'Image du produit',
             'attr' => [
                 'placeholder' => 'Url de l\'image'
-            ]
+            ],
+            'required' => false
         ])
         ->add('category', EntityType::class, [
             'label' => 'Entrez une catégorie',

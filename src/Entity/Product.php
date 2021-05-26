@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -19,11 +20,14 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Le nom du produit est obligatoire")
+     * @Assert\Length(min=3, max=255, minMessage="Le nom du produit doit comporter au moins 3 caractères")
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(message = "Le prix du produit est obligatoire")
      */
     private $price;
 
@@ -34,6 +38,8 @@ class Product
 
     /**
      * @ORM\Column(type="text", length=255, nullable=true)
+     * @Assert\NotBlank(message="La description du produit est obligatoire")
+     * @Assert\Length(min=20, minMessage="La description courte doit faire au minimim 20 caractères")
      */
     private $shortDescription;
 
@@ -44,6 +50,8 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Url(message="La photo principale doit être un URL vérifié")
+     * @Assert\NotBlank(message="Une photo est requise")
      */
     private $picture;
 
@@ -57,7 +65,7 @@ class Product
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -69,7 +77,7 @@ class Product
         return $this->price;
     }
 
-    public function setPrice(int $price): self
+    public function setPrice(?int $price): self
     {
         $this->price = $price;
 
@@ -105,7 +113,7 @@ class Product
         return $this->category;
     }
 
-    public function setCategory(?Category $category): self
+    public function setCategory(Category $category): self
     {
         $this->category = $category;
 
@@ -117,7 +125,7 @@ class Product
         return $this->picture;
     }
 
-    public function setPicture(string $picture): self
+    public function setPicture(?string $picture): self
     {
         $this->picture = $picture;
 

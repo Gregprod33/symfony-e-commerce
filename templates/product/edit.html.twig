@@ -9,13 +9,15 @@
 
 {% block body %}
 	<h1>Editer Produit</h1>
-	{{ form_start(formView) }}
+	{{ form_start(formView, {'attr': {'novalidate': 'novalidate'}}) }}
 	{{ form_errors(formView) }}
+	
 	{# {{ form_widget(formView) }} #}
 
 	<div class="row align-items-center">
-		<div class="col">
-			{{ form_row(formView.name) }}
+		<div
+			class="col">
+			{{ form_row(formView.name) }}	
 			{{ form_row(formView.price) }}
 		</div>
 		<div class="col">

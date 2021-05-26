@@ -10,12 +10,14 @@ use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\Extension\Validator\Constraints\FormValidator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,6 +25,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\GreaterThan;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\LessThan;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\ConstraintValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProductController extends AbstractController
 {
@@ -73,14 +83,15 @@ class ProductController extends AbstractController
      */
     public function edit($id, ProductRepository $productRepository, Request $request, SluggerInterface $slugger, EntityManagerInterface $em)
     {
+
+
         $product = $productRepository->find($id);
         $form = $this->createForm(ProductType::class, $product);
-        $formView = $form->createView();
+
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $product->setSlug(strtolower($slugger->slug($product->getName())));
 
             $em->flush();
@@ -89,14 +100,15 @@ class ProductController extends AbstractController
                 'category_slug' => $product->getCategory()->getSlug(),
                 'slug' => $product->getSlug()
             ]);
-
         }
 
+        $formView = $form->createView();
+
         return $this->render('product/edit.html.twig', [
+            'product' => $product,
             'formView' => $formView,
-            'product' => $product
+
         ]);
-                
     }
 
 
@@ -105,14 +117,19 @@ class ProductController extends AbstractController
      */
     public function create(Request $request, SluggerInterface $slugger, EntityManagerInterface $em)
     {
+
+
+
         $product = new Product;
+
+
+
         $form = $this->createForm(ProductType::class, $product);
         $formView = $form->createView();
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $product->setSlug(strtolower($slugger->slug($product->getName())));
 
             $em->persist($product);
@@ -124,9 +141,9 @@ class ProductController extends AbstractController
             ]);
         }
 
-        
 
-      
+
+
         return $this->render('product/create.html.twig', [
             'formView' => $formView,
             'product' => $product
