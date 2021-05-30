@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -14,28 +15,25 @@ class LoginType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'Adresse Email',
+                'label' => 'Adresse email',
                 'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Entrez votre email'
+                    'placeholder' => 'Adresse mail de connaexion'
                 ]
-
             ])
+         
             ->add('password', PasswordType::class, [
-                'label' => 'Password',
+                'label' => 'Mot de passe',
                 'attr' => [
-                    'class' => 'form-control mb-2',
-                    'placeholder' => 'Entrez votre mot de passe'
+                    'placeholder' => 'Mot de pass de connexion'
                 ]
             ]);
-
-            
+          
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            // 'data_class' => User::class,
         ]);
     }
 }

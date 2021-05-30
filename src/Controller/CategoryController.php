@@ -10,7 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class CategoryController extends AbstractController
@@ -41,9 +44,16 @@ class CategoryController extends AbstractController
     /**
      * @Route("admin/category/{id}/edit", name="category_edit")
      */
-    public function edit(CategoryRepository $categoryRepository, $id, EntityManagerInterface $em, SluggerInterface $slugger, Request $request): Response
+    public function edit(CategoryRepository $categoryRepository, $id, EntityManagerInterface $em, SluggerInterface $slugger, Request $request, Security $security): Response
     {
         $category = $categoryRepository->find($id);
+        
+
+        // $this->denyAccessUnlessGranted('CAN_EDIT', $category, "Vous n'êtes pas le propriétaire de cette catégorie");
+    
+
+        
+
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 
