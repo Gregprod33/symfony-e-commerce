@@ -15,7 +15,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class AppFixtures extends Fixture
 {
     protected $slugger;
-    protected$encoder;
+    protected $encoder;
 
     public function __construct(SluggerInterface $slugger, UserPasswordEncoderInterface $encoder)
     {

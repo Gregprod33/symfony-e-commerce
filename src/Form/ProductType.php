@@ -19,45 +19,44 @@ class ProductType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('name', TextType::class, [
-            'label' => 'Nom du produit',
-            'attr' => [
-                'placeholder' => 'Nom du produit'
-            ],
-            'required' => false  
-        ])
-        ->add('shortDescription', TextareaType::class, [
-            'label' => 'Description courte',
-            'attr' => [
-                'placeholder' => 'Description du produit'
-            ],
-            'required' => false
+            ->add('name', TextType::class, [
+                'label' => 'Nom du produit',
+                'attr' => [
+                    'placeholder' => 'Nom du produit'
+                ],
+                'required' => false
+            ])
+            ->add('shortDescription', TextareaType::class, [
+                'label' => 'Description courte',
+                'attr' => [
+                    'placeholder' => 'Description du produit'
+                ],
+                'required' => false
 
-        ])
-        ->add('price', MoneyType::class, [
-            'label' => 'Prix',
-            'attr' => [
-                'placeholder' => 'Prix du produit'
-            ],
-            'required' => false
-        ])
-        ->add('picture', UrlType::class, [
-            'label' => 'Image du produit',
-            'attr' => [
-                'placeholder' => 'Url de l\'image'
-            ],
-            'required' => false
-        ])
-        ->add('category', EntityType::class, [
-            'label' => 'Entrez une catégorie',
-            'attr' => ['class' => 'form-control'],
-            'placeholder' => 'Entrez une catégorie',
-            'class' => Category::class,
-            'choice_label' => function (Category $category) {
-                return mb_strtoupper($category->getName());
-            }
-        ]);
-        ;
+            ])
+            ->add('price', MoneyType::class, [
+                'label' => 'Prix',
+                'attr' => [
+                    'placeholder' => 'Prix du produit'
+                ],
+                'required' => false
+            ])
+            ->add('picture', UrlType::class, [
+                'label' => 'Image du produit',
+                'attr' => [
+                    'placeholder' => 'Url de l\'image'
+                ],
+                'required' => false
+            ])
+            ->add('category', EntityType::class, [
+                'label' => 'Entrez une catégorie',
+                'attr' => ['class' => 'form-control'],
+                'placeholder' => 'Entrez une catégorie',
+                'class' => Category::class,
+                'choice_label' => function (Category $category) {
+                    return mb_strtoupper($category->getName());
+                }
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
