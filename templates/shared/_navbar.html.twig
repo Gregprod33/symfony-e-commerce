@@ -17,7 +17,10 @@
 				<li class="nav-link ">
 					<a class="text-white" href="{{ path('cart_show') }}">
 
-						{{ render(controller('App\\Controller\\CartController::renderCartQty')) }}
+						
+						<i class="fas fa-shopping-cart tex-white">
+							<span class="rounded bg-success p-1 ms-1 me-1">{{ CartService.renderCartQty }}</span>
+						</i>
 						Panier
 					</a>
 				</li>

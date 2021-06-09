@@ -15,7 +15,7 @@ class CartItem
         $this->qty = $qty;
     }
 
-    public function getTotal(): int
+    public function getTotalPricePerItem(): int
     {
         return $this->product->getPrice() * $this->qty;
     }
