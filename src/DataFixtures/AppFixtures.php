@@ -72,6 +72,9 @@ class AppFixtures extends Fixture
                 $product->setPicture($faker->imageUrl(400, 400, true));
                 $product->setCategory($category);
 
+
+                $products[] = $product;//tableau de produits pour hydrater mes purchases.
+
                 $manager->persist($product);
             }
         }
@@ -84,7 +87,14 @@ class AppFixtures extends Fixture
                 ->setPostalCode($faker->postcode)
                 ->setCity($faker->city)
                 ->setUser($faker->randomElement($users))
-                ->setTotal(mt_rand(20, 300));
+                ->setTotal(mt_rand(20, 300))
+                ->setPurchasedAt($faker->dateTimeBetween('-6 months'));
+
+                $selectedProducts = $faker->randomElements($products, mt_rand(3, 5));
+
+                foreach($selectedProducts as $product){
+                    $purchase->addProduct($product);
+                }
 
             if ($faker->boolean(90)) { //Renvoi un booleen a 90% vrai, si c'est le cas alors status = paid
                 $purchase->setStatus(Purchase::STATUS_PAID);
