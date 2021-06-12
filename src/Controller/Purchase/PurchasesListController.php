@@ -2,6 +2,7 @@
 
 namespace App\Controller\Purchase;
 
+use App\Cart\CartService;
 use App\Entity\User;
 use Twig\Environment;
 use Symfony\Component\Security\Core\Security;
@@ -14,27 +15,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 
-class PurchasesListController extends AbstractController {
+class PurchasesListController extends AbstractController
+{
 
     /**
      * @Route("/purchases", name="purchase_index")
      * @IsGranted("ROLE_USER", message="Vous devez être un utilisateur pour accéder aux commandes")
      */
-    public function index() {
+    public function index(CartService $cartService)
+    {
 
         //1. S'assurer que la personne est connectée sinon redirection vers la page d'accueil
-        
+
         /**@var User */
         $user = $this->getUser();
+        
 
-       
         //2. Savoir qui est connectée
 
         //3. Passer le user a twig
         return $this->render('purchase/index.html.twig', [
-            'purchases' => $user->getPurchases()
+            'purchases' => $user->getPurchases(),
+            
         ]);
-       
-
     }
 }

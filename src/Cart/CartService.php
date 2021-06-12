@@ -44,8 +44,10 @@ class CartService
     }
 
 
-
-    public function getDetailedCartItem(): array
+    /**
+     * @Return CartItem[]
+     */
+    public function getDetailedCartItems(): array
     {
 
         $detailedCart = [];
