@@ -25,19 +25,20 @@ class CartController extends AbstractController
      */
     protected $cartService;
 
-    public function __construct(ProductRepository $cartRepository, CartService $cartService){
+    public function __construct(ProductRepository $cartRepository, CartService $cartService)
+    {
         $this->productRepository = $cartRepository;
         $this->cartService = $cartService;
     }
 
 
-//Méthode qui gère le fait d'enregister un produit en reprenant le cart Service
+    //Méthode qui gère le fait d'enregister un produit en reprenant le cart Service
 
 
     /**
      * @Route("/cart/add/{id}", name="cart_add", requirements={"id":"\d+"})
      */
-    public function add($id, Request $request): Response
+    public function add($id, Request $request)
     {
 
         $product = $this->productRepository->find($id);
@@ -48,10 +49,10 @@ class CartController extends AbstractController
         }
 
         $this->cartService->add($id);
-       
+
         $this->addFlash('success', "Le produit a bien été ajouté au panier !");
 
-        if($request->query->get('returnToCart')) {
+        if ($request->query->get('returnToCart')) {   //afin d'eviter la redirection vers product_show lors de l'increment, ajout d'un get dans url twig voir cart index.html.twig
             return $this->redirectToRoute("cart_show");
         }
 
@@ -71,8 +72,8 @@ class CartController extends AbstractController
         $detailedCart = $this->cartService->getDetailedCartItems();
         $total = $this->cartService->getSuperTotal();
 
-        
-        
+
+
 
         return $this->render('cart/index.html.twig', [
             'items' => $detailedCart,
@@ -85,10 +86,11 @@ class CartController extends AbstractController
     /**
      * @Route("/cart/delete/{id}", name="cart_delete", requirements={"id": "\d+"})
      */
-    public function delete($id){
+    public function delete($id)
+    {
         $product = $this->productRepository->find($id);
 
-        if(!$product){
+        if (!$product) {
             throw $this->createNotFoundException("Le produit $id n'existe pas et ne peut pas être supprimé !");
         }
 
@@ -103,12 +105,12 @@ class CartController extends AbstractController
     /**
      * @Route("/cart/decrement/{id}", name="cart_decrement", requirements={"id": "\d+"})
      */
-    public function decrement($id) {
+    public function decrement($id)
+    {
         $this->cartService->decrement($id);
-        
+
         $this->addFlash('success', "Le produit a bien été retiré du panier !");
 
         return $this->redirectToRoute("cart_show");
     }
-
 }

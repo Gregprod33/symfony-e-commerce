@@ -29,6 +29,11 @@ class CartService
     }
 
 
+    public function empty(){
+        return $this->saveCart([]);
+    }
+
+
 
     public function add(int $id)
     {

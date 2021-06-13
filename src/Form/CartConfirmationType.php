@@ -37,7 +37,6 @@ class CartConfirmationType extends AbstractType
                     'placeholder' => 'Ville'
                 ]
             ]);
-        
     }
 
     public function configureOptions(OptionsResolver $resolver)
