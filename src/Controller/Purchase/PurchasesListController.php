@@ -24,26 +24,28 @@ class PurchasesListController extends AbstractController
      * @Route("/purchases", name="purchase_index")
      * @IsGranted("ROLE_USER", message="Vous devez être un utilisateur pour accéder aux commandes")
      */
-    public function index(CartService $cartService, PurchaseRepository $purchaseRepository)
+    public function index(PurchaseRepository $purchaseRepository)
     {
 
         //1. S'assurer que la personne est connectée sinon redirection vers la page d'accueil
 
         /**@var User */
         $user = $this->getUser();
-        
-       //afichage des commandes les plus récentes en premier
+
+        //afichage des commandes les plus récentes en premier
         $purchases = $purchaseRepository->findBy(
-            ['user' => $user], ['purchasedAt' => 'desc']);
-       
-        
+            ['user' => $user],
+            ['purchasedAt' => 'desc']
+        );
+
+
 
         //2. Savoir qui est connectée
 
         //3. Passer le user a twig
         return $this->render('purchase/index.html.twig', [
             'purchases' => $purchases
-            
+
         ]);
     }
 }

@@ -65,8 +65,8 @@ class PurchaseConfirmationController extends AbstractController
 
         $this->purchasePersister->storePurchase($purchase);
 
-        
-        
+
+
         return $this->redirectToRoute('purchase_payment_form', [
             'id' => $purchase->getId()
         ]);
