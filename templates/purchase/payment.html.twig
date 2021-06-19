@@ -5,18 +5,34 @@
 {%  endblock  %}
 
 {% block body %}
-	<h1>Payer votre commande</h1>
 
-	<form id="payment-form">
-		<label for="card-element">Card</label>
-		<div id="card-element"><!--Stripe.js injects the Card Element--></div>
+<style>
+	h1{
+		margin-bottom: 50px;
+	}
 
-		<button id="submit" class="btn btn-success">
-			<div class="spinner hidden" id="spinner"></div>
-			<span id="button-text">Payer avec stripe</span>
-		</button>
-		<p id="card-error" role="alert"></p>
-	</form>
+	#submit {
+		margin: 25px auto 0 auto;
+		display: block;
+		
+	}
+
+
+</style>
+	<h1 class="text-center">Payer votre commande</h1>
+
+	<div class="container w-50">
+		<form id="payment-form">
+			<div id="card-element"><!--Stripe.js injects the Card Element--></div>
+
+			<button id="submit" class="btn btn-success text-center">
+				<div class="spinner hidden" id="spinner"></div>
+				<span id="button-text">Payer avec stripe</span>
+			</button>
+			<p id="card-error" role="alert"></p>
+		</form>
+	</div>
+	
 {%  endblock  %}
 
 
@@ -25,55 +41,64 @@
 	<script src="https://js.stripe.com/v3/"></script>
 
 	<script>
-	const clientSecret = '{{ clientSecret }}'
-	const stripe = Stripe("pk_test_51J1yCfEGMtU5V1DR124yK4YS3Gu2MgS9sGiQXgb2iOgVml6Ifdem3UJIUm5PN3v2uZxFX9BsVqzgH3YijVM9aMSe00lakIcXr9");
-	const elements = stripe.elements();
-    const style = {
-		base: {
-			color: "#32325d",
-			fontFamily: 'Arial, sans-serif',
-			fontSmoothing: "antialiased",
-			fontSize: "16px",
-			"::placeholder": {
-			color: "#32325d"
-			}
-		},
-		invalid: {
-			fontFamily: 'Arial, sans-serif',
-			color: "#fa755a",
-			iconColor: "#fa755a"
-		}
-    };
-    const card = elements.create("card", { style: style });
-    // Stripe injects an iframe into the DOM
+		const clientSecret = '{{ clientSecret }}'
+		const stripe = Stripe("pk_test_51J1yCfEGMtU5V1DR124yK4YS3Gu2MgS9sGiQXgb2iOgVml6Ifdem3UJIUm5PN3v2uZxFX9BsVqzgH3YijVM9aMSe00lakIcXr9");
+		const elements = stripe.elements();
 
-	setTimeout(function(){card.mount("#card-element"); }, 10);
-    
-    card.on("change", function (event) {
-		// Disable the Pay button if there are no card details in the Element
-		document.querySelector("button").disabled = event.empty;
-		document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
-    });
-    const form = document.getElementById("payment-form");
-    form.addEventListener("submit", function(event) {
-		event.preventDefault();
-		// Complete payment when the submit button is clicked
-		stripe
-			.confirmCardPayment(clientSecret, {
+		const card = elements.create("card");
+		// Stripe injects an iframe into the DOM
+
+		setTimeout(function () {
+			card.mount("#card-element");
+			card.on("change", function (event) { // Disable the Pay button if there are no card details in the Element
+			document.querySelector("button").disabled = event.empty;
+			document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
+			});
+			const form = document.getElementById("payment-form");
+			form.addEventListener("submit", function (event) {
+				event.preventDefault();
+			// Complete payment when the submit button is clicked
+				stripe
+					.confirmCardPayment(clientSecret, {
+						payment_method: {
+						card: card
+						}
+					})
+					.then(function (result) {
+						if (result.error) { // Show error to your customer
+							console.log(result.error.message);
+						} else { // The payment succeeded!
+							console.log(result);
+
+							// Une fois le formulaire de CB soumis, la commande est validée et redirection vers le PurchasePaymentSuccessController
+							window.location.href = "{{ url('purchase_payment_success', {'id': purchase.id}) }}";
+						}
+					});
+			});
+
+		}, 10);
+
+		card.on("change", function (event) { // Disable the Pay button if there are no card details in the Element
+			document.querySelector("button").disabled = event.empty;
+			document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
+		});
+		const form = document.getElementById("payment-form");
+		form.addEventListener("submit", function (event) {
+			event.preventDefault();
+			// Complete payment when the submit button is clicked
+			stripe.confirmCardPayment(clientSecret, {
 				payment_method: {
-					card: card
+				card: card
 				}
 			})
-			.then(function(result) {
-				if (result.error) {
-					// Show error to your customer
+			.then(function (result) {
+				if (result.error) { // Show error to your customer
 					console.log(result.error.message);
-				} else {
-					// The payment succeeded!
+				} else { // The payment succeeded!
 					console.log(result);
 				}
 			});
-    });
+		});
 	</script>
 
 

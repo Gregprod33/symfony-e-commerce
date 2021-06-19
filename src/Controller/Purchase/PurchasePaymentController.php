@@ -2,8 +2,11 @@
 
 namespace App\Controller\Purchase;
 
+use App\Entity\Purchase;
 use App\Repository\PurchaseRepository;
+use App\Stripe\StripeService;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PurchasePaymentController extends AbstractController
@@ -11,17 +14,20 @@ class PurchasePaymentController extends AbstractController
 
     /**
      * @Route("/purchase/payment/{id}", name="purchase_payment_form")
+     * @IsGranted("ROLE_USER")
      */
-    public function showPaymentForm($id, PurchaseRepository $purchaseRepository)
+    public function showPaymentForm($id, PurchaseRepository $purchaseRepository, StripeService $stripeService)
     {
 
         $purchase = $purchaseRepository->find($id);
         $total = $purchase->getTotal() * 100;
 
-        if (!$purchase) {
+        if(!$purchase ||
+        ($purchase && $purchase->getStatus() === Purchase::STATUS_PAID) ||
+        ($purchase && $purchase->getUser() !== $this->getUser())) {
             return $this->redirectToRoute('cart_Show');
         }
-        \Stripe\Stripe::setApiKey('sk_test_51J1yCfEGMtU5V1DR30nUE9kcWVVrpZxfGKhhW9oNXu14zJjHV6ZEGQCSbLWNetiE60xW525r9tz3I90t7X0JtfTN00Bhny10vb');
+        $intent = $stripeService->getPaymentIntent($purchase);
 
        $intent =  \Stripe\PaymentIntent::create([
             'amount' => $total,
@@ -31,7 +37,8 @@ class PurchasePaymentController extends AbstractController
         
 
         return $this->render('purchase/payment.html.twig', [
-            'clientSecret' => $intent->client_secret
+            'clientSecret' => $intent->client_secret,
+            'purchase' => $purchase
         ]);
     }
 }
