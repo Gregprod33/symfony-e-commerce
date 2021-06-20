@@ -32,13 +32,15 @@ class PurchasePaymentController extends AbstractController
        $intent =  \Stripe\PaymentIntent::create([
             'amount' => $total,
             'currency' => 'eur',
+            
         ]);
 
         
 
         return $this->render('purchase/payment.html.twig', [
             'clientSecret' => $intent->client_secret,
-            'purchase' => $purchase
+            'purchase' => $purchase,
+            'stripePublicKey' => $stripeService->getPublicKey()
         ]);
     }
 }

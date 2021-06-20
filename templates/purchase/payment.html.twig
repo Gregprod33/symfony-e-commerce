@@ -17,8 +17,9 @@
 		
 	}
 
-
 </style>
+
+
 	<h1 class="text-center">Payer votre commande</h1>
 
 	<div class="container w-50">
@@ -42,63 +43,11 @@
 
 	<script>
 		const clientSecret = '{{ clientSecret }}'
-		const stripe = Stripe("pk_test_51J1yCfEGMtU5V1DR124yK4YS3Gu2MgS9sGiQXgb2iOgVml6Ifdem3UJIUm5PN3v2uZxFX9BsVqzgH3YijVM9aMSe00lakIcXr9");
-		const elements = stripe.elements();
-
-		const card = elements.create("card");
-		// Stripe injects an iframe into the DOM
-
-		setTimeout(function () {
-			card.mount("#card-element");
-			card.on("change", function (event) { // Disable the Pay button if there are no card details in the Element
-			document.querySelector("button").disabled = event.empty;
-			document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
-			});
-			const form = document.getElementById("payment-form");
-			form.addEventListener("submit", function (event) {
-				event.preventDefault();
-			// Complete payment when the submit button is clicked
-				stripe
-					.confirmCardPayment(clientSecret, {
-						payment_method: {
-						card: card
-						}
-					})
-					.then(function (result) {
-						if (result.error) { // Show error to your customer
-							console.log(result.error.message);
-						} else { // The payment succeeded!
-							console.log(result);
-
-							// Une fois le formulaire de CB soumis, la commande est validée et redirection vers le PurchasePaymentSuccessController
-							window.location.href = "{{ url('purchase_payment_success', {'id': purchase.id}) }}";
-						}
-					});
-			});
-
-		}, 10);
-
-		card.on("change", function (event) { // Disable the Pay button if there are no card details in the Element
-			document.querySelector("button").disabled = event.empty;
-			document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
-		});
-		const form = document.getElementById("payment-form");
-		form.addEventListener("submit", function (event) {
-			event.preventDefault();
-			// Complete payment when the submit button is clicked
-			stripe.confirmCardPayment(clientSecret, {
-				payment_method: {
-				card: card
-				}
-			})
-			.then(function (result) {
-				if (result.error) { // Show error to your customer
-					console.log(result.error.message);
-				} else { // The payment succeeded!
-					console.log(result);
-				}
-			});
-		});
+		const stripePublicKey = ' {{ stripePublicKey }}';
+		const redirectAfterSuccessUrl = "{{ url('purchase_payment_success', {'id': purchase.id}) }}";
+	</script>
+	<script src="/js/payment.js">
+	
 	</script>
 
 
